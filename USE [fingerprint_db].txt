@@ -1,0 +1,204 @@
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[attendance]    Script Date: 12/27/2025 2:43:37 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[attendance](
+	[attendance_id] [int] IDENTITY(1,1) NOT NULL,
+	[employee_id] [varchar](100) NOT NULL,
+	[shift_id] [int] NOT NULL,
+	[shift_date] [varchar](100) NOT NULL,
+	[in_time] [datetime] NULL,
+	[out_time] [datetime] NULL,
+	[status] [varchar](20) NULL,
+	[work_hours] [decimal](5, 2) NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[attendance_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[attendance] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+
+ALTER TABLE [dbo].[attendance]  WITH CHECK ADD FOREIGN KEY([employee_id])
+REFERENCES [dbo].[employees2] ([employee_id])
+GO
+
+ALTER TABLE [dbo].[attendance]  WITH CHECK ADD FOREIGN KEY([shift_id])
+REFERENCES [dbo].[shifts] ([shift_id])
+GO
+
+
+///////////////////////////////////////////////////////////
+
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[departments2]    Script Date: 12/27/2025 2:44:13 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[departments2](
+	[department_id] [varchar](100) NOT NULL,
+	[department_name] [varchar](200) NOT NULL,
+	[created_at] [datetime2](7) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[department_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[department_name] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[departments2] ADD  DEFAULT (sysdatetime()) FOR [created_at]
+GO
+
+
+////////////////////////////////////////////
+
+
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[employee_shifts2]    Script Date: 12/27/2025 2:44:42 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[employee_shifts2](
+	[employee_shift_id] [int] IDENTITY(1,1) NOT NULL,
+	[employee_id] [varchar](100) NOT NULL,
+	[shift_id] [int] NOT NULL,
+	[shift_date] [varchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[employee_shift_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[employee_id] ASC,
+	[shift_id] ASC,
+	[shift_date] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[employee_shifts2]  WITH CHECK ADD FOREIGN KEY([employee_id])
+REFERENCES [dbo].[employees2] ([employee_id])
+GO
+
+ALTER TABLE [dbo].[employee_shifts2]  WITH CHECK ADD FOREIGN KEY([shift_id])
+REFERENCES [dbo].[shifts] ([shift_id])
+GO
+
+
+///////////////////////////
+
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[employees2]    Script Date: 12/27/2025 2:45:08 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[employees2](
+	[employee_id] [varchar](100) NOT NULL,
+	[department_name] [varchar](100) NULL,
+	[employee_code] [varchar](50) NOT NULL,
+	[first_name] [varchar](50) NOT NULL,
+	[last_name] [varchar](50) NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[employee_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[employee_code] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[employees2] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+
+
+
+
+////////////////////////////
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[fingerprint_logs]    Script Date: 12/27/2025 2:45:37 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[fingerprint_logs](
+	[log_id] [int] IDENTITY(1,1) NOT NULL,
+	[employee_code] [varchar](50) NOT NULL,
+	[log_time] [datetime] NOT NULL,
+	[device_type] [varchar](50) NOT NULL,
+	[log_type] [varchar](10) NOT NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[log_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[fingerprint_logs] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+
+
+////////////////////////////////////
+
+USE [fingerprint_db]
+GO
+
+/****** Object:  Table [dbo].[shifts]    Script Date: 12/27/2025 2:45:54 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[shifts](
+	[shift_id] [int] IDENTITY(1,1) NOT NULL,
+	[shift_name] [varchar](50) NOT NULL,
+	[start_time] [time](7) NOT NULL,
+	[end_time] [time](7) NOT NULL,
+	[created_at] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[shift_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[shifts] ADD  DEFAULT (getdate()) FOR [created_at]
+GO
+
+

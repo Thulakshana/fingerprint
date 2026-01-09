@@ -1,0 +1,17 @@
+USE fingerprint_db;
+GO
+
+BEGIN TRANSACTION;
+
+-- 1️⃣ Child tables first
+DELETE FROM dbo.attendance;
+DELETE FROM dbo.employee_shifts2;
+DELETE FROM dbo.fingerprint_logs;
+
+-- 2️⃣ Parent tables
+DELETE FROM dbo.employees2;
+DELETE FROM dbo.shifts;
+DELETE FROM dbo.departments2;
+
+COMMIT TRANSACTION;
+GO
